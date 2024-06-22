@@ -5,6 +5,7 @@
 - Users can post
 - Users can see posts
 - User Authentication
+- Users can see their profile
 
 ## Tables
 
@@ -33,5 +34,12 @@
   - authorId
   - createdAt
   - updatedAt
-  - isPublished
+  - published
   - publishedAt
+
+## Technologies
+
+- graphql
+- typescript
+- postgresql
+- prisma
