@@ -1,32 +1,7 @@
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
-
-const typeDefs = `
-  type Book {
-    title: String
-    author: String
-  }
-  type Query {
-    books: [Book]
-  }
-`;
-
-const books = [
-	{
-		title: 'The Awakening',
-		author: 'Kate Chopin'
-	},
-	{
-		title: 'City of Glass',
-		author: 'Paul Auster'
-	}
-];
-
-const resolvers = {
-	Query: {
-		books: () => books
-	}
-};
+import resolvers from './resolvers';
+import typeDefs from './schema';
 
 const main = async () => {
 	const server = new ApolloServer({
