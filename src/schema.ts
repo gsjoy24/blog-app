@@ -19,8 +19,12 @@ const typeDefs = `
     email: String!,
     password: String!
   ): AuthPayload
-  }
 
+  createPost(
+    title: String!,
+    content: String!,
+  ): Post
+  }
 
 
   type AuthPayload {token: String!}

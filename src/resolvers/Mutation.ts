@@ -1,7 +1,5 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { config } from '../config';
-import jwtHelper from '../utils/jwtHelper';
+import jwtHelpers from '../utils/jwtHelpers';
 type TUser = {
 	id?: string;
 	email: string;
@@ -43,7 +41,7 @@ const Mutation = {
 			return user;
 		});
 
-		const token = jwtHelper({ userId: user.id, name: user.name, email: user.email });
+		const token = jwtHelpers.generateToken({ userId: user.id, name: user.name, email: user.email });
 
 		return {
 			token
@@ -61,10 +59,31 @@ const Mutation = {
 		if (!valid) {
 			throw new Error('Invalid password');
 		}
-		const token = jwtHelper({ userId: user.id, name: user.name, email: user.email });
+		const token = jwtHelpers.generateToken({ userId: user.id, name: user.name, email: user.email });
 		return {
 			token
 		};
+	},
+
+	createPost: async (parent: any, args: any, { prisma, userInfo }: any) => {
+		if (!userInfo) {
+			throw new Error('Unauthorized');
+		}
+		const user = await prisma.user.findUnique({
+			where: { id: userInfo.userId }
+		});
+		if (!user) {
+			throw new Error('User not found');
+		}
+		const post = await prisma.post.create({
+			data: {
+				title: args.title,
+				content: args.content,
+				published: true,
+				authorId: userInfo.userId
+			}
+		});
+		return post;
 	}
 };
 
