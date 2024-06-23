@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { config } from '../config';
+import jwtHelper from '../utils/jwtHelper';
 type TUser = {
 	id?: string;
 	email: string;
@@ -42,10 +43,7 @@ const Mutation = {
 			return user;
 		});
 
-		const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, config.jwtSecret, {
-			expiresIn: '1d'
-		});
-		console.log(token);
+		const token = jwtHelper({ userId: user.id, name: user.name, email: user.email });
 
 		return {
 			token
@@ -63,9 +61,7 @@ const Mutation = {
 		if (!valid) {
 			throw new Error('Invalid password');
 		}
-		const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, config.jwtSecret, {
-			expiresIn: '1d'
-		});
+		const token = jwtHelper({ userId: user.id, name: user.name, email: user.email });
 		return {
 			token
 		};
