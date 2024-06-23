@@ -8,12 +8,21 @@ const typeDefs = `
   }
 
   type Mutation {
-  signUp(
-    name: String,
+    signUp(
+      name: String,
+      email: String!,
+      password: String!
+      ): AuthPayload
+
+    signIn (
     email: String!,
     password: String!
-    ): User
+  ): AuthPayload
   }
+
+
+
+  type AuthPayload {token: String!}
 
   type User {
     id: ID!
