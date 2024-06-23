@@ -6,6 +6,7 @@ type TUser = {
 	id?: string;
 	email: string;
 	name: string;
+	bio?: string;
 	password: string;
 	createdAt?: string;
 	updatedAt?: string;
@@ -28,13 +29,30 @@ const resolvers = {
 	},
 	Mutation: {
 		signUp: async (parent: any, args: TUser, context: any) => {
+			const isUserExist = await prisma.user.findUnique({
+				where: { email: args.email }
+			});
+			if (isUserExist) {
+				throw new Error('User already exist');
+			}
+
 			const password = await bcrypt.hash(args.password, 12);
-			const user = await prisma.user.create({
-				data: {
-					name: args.name,
-					email: args.email,
-					password
-				}
+			const user = await prisma.$transaction(async (tx) => {
+				const user = await tx.user.create({
+					data: {
+						email: args.email,
+						name: args.name,
+						password
+					}
+				});
+				await tx.profile.create({
+					data: {
+						userId: user.id,
+						bio: args.bio
+					}
+				});
+
+				return user;
 			});
 
 			const token = jwt.sign({ userId: user.id, name: user.name, email: user.email }, config.jwtSecret, {
