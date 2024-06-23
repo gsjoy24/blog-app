@@ -7,14 +7,22 @@ const typeDefs = `
     post(id: ID!): Post
   }
 
+  type Mutation {
+  signUp(
+    name: String,
+    email: String!,
+    password: String!
+    ): User
+  }
+
   type User {
     id: ID!
     email: String!
     name: String
     createdAt: String!
     updatedAt: String!
-    role: Role!
-    posts: [Post!]!
+    role: String!
+    posts: [Post!]
     profile: Profile
   }
 
@@ -36,7 +44,7 @@ const typeDefs = `
     createdAt: String!
     updatedAt: String!
   }
-    }
+    
 `;
 
 export default typeDefs;
